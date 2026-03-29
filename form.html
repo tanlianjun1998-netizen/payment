@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>支付记录填写</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(to bottom,#b22222,#ffcc99);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:15px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:18px;
+width:100%;
+max-width:420px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+h2{
+text-align:center;
+color:#b22222;
+margin-bottom:20px;
+}
+
+input,textarea,select{
+width:100%;
+padding:15px;
+margin:8px 0;
+border-radius:12px;
+border:1px solid #ddd;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:16px;
+background:#b22222;
+color:white;
+border:none;
+border-radius:14px;
+font-size:17px;
+font-weight:bold;
+margin-top:10px;
+}
+
+button:disabled{
+background:#999;
+}
+
+.error{
+color:red;
+font-size:14px;
+display:none;
+margin-bottom:10px;
+}
+
+.loading{
+text-align:center;
+color:#b22222;
+margin-top:10px;
+display:none;
+font-weight:bold;
+}
+
+.success{
+text-align:center;
+color:green;
+margin-top:10px;
+display:none;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>支付记录填写</h2>
+
+<div class="error" id="error">请填写完整信息</div>
+
+<input id="name" placeholder="姓名 *">
+<input id="phone" placeholder="电话 *">
+<input id="amount" placeholder="金额 *">
+
+<select id="method">
+<option value="">付款方式 *</option>
+<option>现金</option>
+<option>Bank Transfer</option>
+<option>TNG</option>
+</select>
+
+<textarea id="note" placeholder="备注"></textarea>
+
+<button id="btn" onclick="submitData()">提交</button>
+
+<div class="loading" id="loading">提交中...</div>
+<div class="success" id="success">提交成功 ✓</div>
+
+</div>
+
+<script>
+
+function submitData(){
+
+const name=document.getElementById("name").value.trim()
+const phone=document.getElementById("phone").value.trim()
+const amount=document.getElementById("amount").value.trim()
+const method=document.getElementById("method").value
+
+if(!name || !phone || !amount || !method){
+
+document.getElementById("error").style.display="block"
+return
+
+}
+
+document.getElementById("error").style.display="none"
+document.getElementById("btn").disabled=true
+document.getElementById("loading").style.display="block"
+
+fetch("https://script.google.com/macros/s/AKfycbzE-1OH2V0V1N_Jb-9XV50gN-RS4p5HqLAnWThf9o6A5cBTh_TZBnyt-Z-SKIfSECoe/exec",{
+
+method:"POST",
+
+body:JSON.stringify({
+
+name:name,
+phone:phone,
+amount:amount,
+method:method,
+note:document.getElementById("note").value
+
+})
+
+})
+
+.then(()=>{
+
+document.getElementById("loading").style.display="none"
+document.getElementById("success").style.display="block"
+
+document.getElementById("btn").disabled=false
+
+document.getElementById("name").value=""
+document.getElementById("phone").value=""
+document.getElementById("amount").value=""
+document.getElementById("method").value=""
+document.getElementById("note").value=""
+
+})
+
+.catch(()=>{
+
+document.getElementById("loading").style.display="none"
+alert("提交失败")
+document.getElementById("btn").disabled=false
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
