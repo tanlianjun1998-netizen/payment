@@ -60,6 +60,22 @@ button{
   margin-bottom:10px;
 }
 
+.stats{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:10px;
+}
+
+.stats div{
+background:#fff;
+padding:8px 12px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
+font-weight:bold;
+color:#b22222;
+}
+
 .search{
   display:flex;
   gap:10px;
@@ -111,11 +127,20 @@ button{
 
 <div id="admin" style="display:none">
   <div class="header">
+
     <div class="total" id="total">总金额：0</div>
+
+    <div class="stats">
+      <div>观音衣：<span id="gy">0</span></div>
+      <div>添油：<span id="ty">0</span></div>
+      <div>点灯：<span id="dd">0</span></div>
+    </div>
+
     <div class="search">
       <input id="search" placeholder="搜索姓名" onkeyup="search()">
       <button onclick="load()">刷新</button>
     </div>
+
   </div>
 
   <div id="list">
@@ -158,17 +183,28 @@ function load(){
 }
 
 function render(data){
+
   let total = 0;
+  let gy = 0;
+  let ty = 0;
+  let dd = 0;
   let html = "";
 
   if(!data || data.length <= 1){
     document.getElementById("list").innerHTML = "<div class='empty'>暂无记录</div>";
-    document.getElementById("total").innerText = "总金额：0";
     return;
   }
 
   for(let i = 1; i < data.length; i++){
-    total += Number(data[i][4]) || 0;
+
+    const amount = Number(data[i][4]) || 0;
+    const project = data[i][5];
+
+    total += amount;
+
+    if(project=="观音衣") gy += amount;
+    if(project=="添油") ty += amount;
+    if(project=="点灯") dd += amount;
 
     html += `
       <div class="card">
@@ -176,16 +212,22 @@ function render(data){
         <b>时间：</b>${data[i][1] || ""}<br>
         <b>姓名：</b>${data[i][2] || ""}<br>
         <b>电话：</b>${data[i][3] || ""}<br>
-        <div class="amount">RM ${data[i][4] || 0}</div>
-        <b>付款方式：</b>${data[i][5] || ""}<br>
-        <b>备注：</b>${data[i][6] || ""}<br>
+        <div class="amount">RM ${amount}</div>
+        <b>项目：</b>${data[i][5] || ""}<br>
+        <b>付款方式：</b>${data[i][6] || ""}<br>
+        <b>备注：</b>${data[i][7] || ""}<br>
         <button onclick="del('${data[i][0]}')">删除记录</button>
       </div>
     `;
   }
 
   document.getElementById("list").innerHTML = html;
+
   document.getElementById("total").innerText = "总金额：" + total;
+  document.getElementById("gy").innerText = "RM " + gy;
+  document.getElementById("ty").innerText = "RM " + ty;
+  document.getElementById("dd").innerText = "RM " + dd;
+
 }
 
 function search(){
