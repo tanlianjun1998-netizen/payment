@@ -103,6 +103,14 @@ font-weight:bold;
 <input id="phone" placeholder="电话 *">
 <input id="amount" placeholder="金额 *">
 
+<!-- 项目选择 -->
+<select id="project">
+<option value="">项目 *</option>
+<option>观音衣</option>
+<option>添油</option>
+<option>点灯</option>
+</select>
+
 <select id="method">
 <option value="">付款方式 *</option>
 <option>现金</option>
@@ -126,9 +134,10 @@ function submitData(){
 const name=document.getElementById("name").value.trim()
 const phone=document.getElementById("phone").value.trim()
 const amount=document.getElementById("amount").value.trim()
+const project=document.getElementById("project").value
 const method=document.getElementById("method").value
 
-if(!name || !phone || !amount || !method){
+if(!name || !phone || !amount || !project || !method){
 
 document.getElementById("error").style.display="block"
 return
@@ -148,6 +157,7 @@ body:JSON.stringify({
 name:name,
 phone:phone,
 amount:amount,
+project:project,
 method:method,
 note:document.getElementById("note").value
 
@@ -165,6 +175,7 @@ document.getElementById("btn").disabled=false
 document.getElementById("name").value=""
 document.getElementById("phone").value=""
 document.getElementById("amount").value=""
+document.getElementById("project").value=""
 document.getElementById("method").value=""
 document.getElementById("note").value=""
 
