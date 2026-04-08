@@ -7,57 +7,57 @@
 
 <style>
 *{
-  box-sizing:border-box;
+box-sizing:border-box;
 }
 
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f5f5f5;
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f5f5;
 }
 
 .login{
-  max-width:400px;
-  margin:80px auto;
-  background:white;
-  padding:25px;
-  border-radius:15px;
-  box-shadow:0 5px 20px rgba(0,0,0,0.1);
+max-width:400px;
+margin:80px auto;
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
 }
 
 input{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:10px;
-  border:1px solid #ddd;
-  font-size:16px;
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:1px solid #ddd;
+font-size:16px;
 }
 
 button{
-  padding:10px 14px;
-  background:#b22222;
-  color:white;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:15px;
+padding:10px 14px;
+background:#b22222;
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-size:15px;
 }
 
 .header{
-  background:white;
-  padding:15px;
-  position:sticky;
-  top:0;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
-  z-index:10;
+background:white;
+padding:15px;
+position:sticky;
+top:0;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+z-index:10;
 }
 
 .total{
-  font-weight:bold;
-  color:#b22222;
-  font-size:20px;
-  margin-bottom:10px;
+font-weight:bold;
+color:#b22222;
+font-size:20px;
+margin-bottom:10px;
 }
 
 .stats{
@@ -74,44 +74,51 @@ border-radius:10px;
 box-shadow:0 2px 8px rgba(0,0,0,0.08);
 font-weight:bold;
 color:#b22222;
+cursor:pointer;
+transition:0.2s;
+}
+
+.stats div:hover{
+background:#b22222;
+color:white;
 }
 
 .search{
-  display:flex;
-  gap:10px;
+display:flex;
+gap:10px;
 }
 
 .card{
-  background:white;
-  margin:12px;
-  padding:15px;
-  border-radius:15px;
-  box-shadow:0 3px 15px rgba(0,0,0,0.08);
-  line-height:1.7;
+background:white;
+margin:12px;
+padding:15px;
+border-radius:15px;
+box-shadow:0 3px 15px rgba(0,0,0,0.08);
+line-height:1.7;
 }
 
 .amount{
-  font-size:20px;
-  font-weight:bold;
-  color:#b22222;
+font-size:20px;
+font-weight:bold;
+color:#b22222;
 }
 
 .card button{
-  margin-top:10px;
-  width:100%;
+margin-top:10px;
+width:100%;
 }
 
 .loading{
-  text-align:center;
-  padding:20px;
-  color:#b22222;
-  font-weight:bold;
+text-align:center;
+padding:20px;
+color:#b22222;
+font-weight:bold;
 }
 
 .empty{
-  text-align:center;
-  padding:30px;
-  color:#999;
+text-align:center;
+padding:30px;
+color:#999;
 }
 </style>
 </head>
@@ -119,136 +126,189 @@ color:#b22222;
 <body>
 
 <div class="login" id="login">
-  <h2>后台登录</h2>
-  <input id="user" placeholder="账号">
-  <input id="pass" type="password" placeholder="密码">
-  <button onclick="login()">登录</button>
+<h2>后台登录</h2>
+<input id="user" placeholder="账号">
+<input id="pass" type="password" placeholder="密码">
+<button onclick="login()">登录</button>
 </div>
 
 <div id="admin" style="display:none">
-  <div class="header">
 
-    <div class="total" id="total">总金额：0</div>
+<div class="header">
 
-    <div class="stats">
-      <div>观音衣：<span id="gy">0</span></div>
-      <div>添油：<span id="ty">0</span></div>
-      <div>点灯：<span id="dd">0</span></div>
-    </div>
+<div class="total" id="total">总金额：0</div>
 
-    <div class="search">
-      <input id="search" placeholder="搜索姓名" onkeyup="search()">
-      <button onclick="load()">刷新</button>
-    </div>
+<div class="stats">
+<div onclick="filterProject('全部')">全部</div>
+<div onclick="filterProject('观音衣')">观音衣：<span id="gy">0</span></div>
+<div onclick="filterProject('添油')">添油：<span id="ty">0</span></div>
+<div onclick="filterProject('点灯')">点灯：<span id="dd">0</span></div>
+</div>
 
-  </div>
+<div class="search">
+<input id="search" placeholder="搜索姓名" onkeyup="search()">
+<button onclick="load()">刷新</button>
+</div>
 
-  <div id="list">
-    <div class="loading">加载中...</div>
-  </div>
+</div>
+
+<div id="list">
+<div class="loading">加载中...</div>
+</div>
+
 </div>
 
 <script>
-const USER = "tan";
-const PASS = "12345";
-const URL = "https://script.google.com/macros/s/AKfycbzE-1OH2V0V1N_Jb-9XV50gN-RS4p5HqLAnWThf9o6A5cBTh_TZBnyt-Z-SKIfSECoe/exec";
 
-let allData = [];
+const USER="tan"
+const PASS="12345"
+
+const URL="https://script.google.com/macros/s/AKfycbzE-1OH2V0V1N_Jb-9XV50gN-RS4p5HqLAnWThf9o6A5cBTh_TZBnyt-Z-SKIfSECoe/exec"
+
+let allData=[]
 
 function login(){
-  const user = document.getElementById("user").value;
-  const pass = document.getElementById("pass").value;
 
-  if(user === USER && pass === PASS){
-    document.getElementById("login").style.display = "none";
-    document.getElementById("admin").style.display = "block";
-    load();
-  }else{
-    alert("登录失败");
-  }
+const user=document.getElementById("user").value
+const pass=document.getElementById("pass").value
+
+if(user===USER && pass===PASS){
+
+document.getElementById("login").style.display="none"
+document.getElementById("admin").style.display="block"
+
+load()
+
+}else{
+
+alert("登录失败")
+
+}
+
 }
 
 function load(){
-  document.getElementById("list").innerHTML = "<div class='loading'>加载中...</div>";
 
-  fetch(URL)
-    .then(res => res.json())
-    .then(data => {
-      allData = data;
-      render(data);
-    })
-    .catch(() => {
-      document.getElementById("list").innerHTML = "<div class='empty'>读取失败</div>";
-    });
+document.getElementById("list").innerHTML="<div class='loading'>加载中...</div>"
+
+fetch(URL)
+
+.then(res=>res.json())
+
+.then(data=>{
+
+allData=data
+
+render(data)
+
+})
+
 }
 
 function render(data){
 
-  let total = 0;
-  let gy = 0;
-  let ty = 0;
-  let dd = 0;
-  let html = "";
+let total=0
+let gy=0
+let ty=0
+let dd=0
 
-  if(!data || data.length <= 1){
-    document.getElementById("list").innerHTML = "<div class='empty'>暂无记录</div>";
-    return;
-  }
+let html=""
 
-  for(let i = 1; i < data.length; i++){
+if(!data || data.length<=1){
 
-    const amount = Number(data[i][4]) || 0;
-    const project = data[i][5];
+document.getElementById("list").innerHTML="<div class='empty'>暂无记录</div>"
+return
 
-    total += amount;
+}
 
-    if(project=="观音衣") gy += amount;
-    if(project=="添油") ty += amount;
-    if(project=="点灯") dd += amount;
+for(let i=1;i<data.length;i++){
 
-    html += `
-      <div class="card">
-        <b>编号：</b>${data[i][0] || ""}<br>
-        <b>时间：</b>${data[i][1] || ""}<br>
-        <b>姓名：</b>${data[i][2] || ""}<br>
-        <b>电话：</b>${data[i][3] || ""}<br>
-        <div class="amount">RM ${amount}</div>
-        <b>项目：</b>${data[i][5] || ""}<br>
-        <b>付款方式：</b>${data[i][6] || ""}<br>
-        <b>备注：</b>${data[i][7] || ""}<br>
-        <button onclick="del('${data[i][0]}')">删除记录</button>
-      </div>
-    `;
-  }
+const amount=Number(data[i][4])||0
+const project=data[i][5]
 
-  document.getElementById("list").innerHTML = html;
+total+=amount
 
-  document.getElementById("total").innerText = "总金额：" + total;
-  document.getElementById("gy").innerText = "RM " + gy;
-  document.getElementById("ty").innerText = "RM " + ty;
-  document.getElementById("dd").innerText = "RM " + dd;
+if(project=="观音衣") gy+=amount
+if(project=="添油") ty+=amount
+if(project=="点灯") dd+=amount
+
+html+=`
+
+<div class="card">
+
+<b>编号：</b>${data[i][0]||""}<br>
+<b>时间：</b>${data[i][1]||""}<br>
+<b>姓名：</b>${data[i][2]||""}<br>
+<b>电话：</b>${data[i][3]||""}<br>
+
+<div class="amount">RM ${amount}</div>
+
+<b>项目：</b>${data[i][5]||""}<br>
+<b>付款方式：</b>${data[i][6]||""}<br>
+<b>备注：</b>${data[i][7]||""}<br>
+
+<button onclick="del('${data[i][0]}')">删除记录</button>
+
+</div>
+
+`
+
+}
+
+document.getElementById("list").innerHTML=html
+
+document.getElementById("total").innerText="总金额："+total
+document.getElementById("gy").innerText="RM "+gy
+document.getElementById("ty").innerText="RM "+ty
+document.getElementById("dd").innerText="RM "+dd
+
+}
+
+function filterProject(project){
+
+if(project=="全部"){
+render(allData)
+return
+}
+
+const filtered=allData.filter((r,index)=>
+index===0 || r[5]===project
+)
+
+render(filtered)
 
 }
 
 function search(){
-  const key = document.getElementById("search").value.trim();
-  const filtered = allData.filter((r, index) => index === 0 || (r[2] || "").includes(key));
-  render(filtered);
+
+const key=document.getElementById("search").value.trim()
+
+const filtered=allData.filter((r,index)=>
+index===0 || (r[2]||"").includes(key)
+)
+
+render(filtered)
+
 }
 
 function del(id){
-  if(confirm("确定删除？")){
-    fetch(URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "delete",
-        id: id
-      })
-    })
-    .then(() => load())
-    .catch(() => alert("删除失败"));
-  }
+
+if(confirm("确定删除？")){
+
+fetch(URL,{
+method:"POST",
+body:JSON.stringify({
+action:"delete",
+id:id
+})
+})
+
+.then(()=>load())
+
 }
+
+}
+
 </script>
 
 </body>
